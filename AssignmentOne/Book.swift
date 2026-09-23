@@ -5,27 +5,37 @@
 //  Created by Siksaka Suriyasat on 9/23/26.
 //
 import Foundation
+import SwiftData
 
-struct Book: Identifiable, Hashable {
-    let id = UUID()
+@Model
+final class Book {
     var title: String
     var releaseDate: Date
     var author: String
     var price: Double
     var status: Status
     
-    mutating func updateStatus() {
-        if (status == Status.unread){
-            self.status = Status.reading
-        } else if (status == Status.reading){
-            self.status = Status.read
-        } else {
-            self.status = Status.unread
+    init(title: String, releaseDate: Date, author: String, price: Double, status: Status) {
+        self.title = title
+        self.releaseDate = releaseDate
+        self.author = author
+        self.price = price
+        self.status = status
+    }
+    
+    func updateStatus() {
+        switch status {
+        case .unread:
+            status = .reading
+        case .reading:
+            status = .read
+        case .read:
+            status = .unread
         }
     }
 }
 
-enum Status {
+enum Status: String, Codable, CaseIterable {
     case read
     case reading
     case unread
