@@ -46,6 +46,18 @@ struct BookView: View {
                             Text("$\(book.price, specifier: "%.2f")")
                         }
                     }
+                    .swipeActions(edge: .trailing){
+                        Button (role:.destructive){
+                            modelContext.delete(book)
+                        } label: {
+                            Image(systemName: "trash.fill")
+                        }
+                        Button (role:.confirm){
+                            modelContext.delete(book)
+                        } label: {
+                            Image(systemName: "pencil")
+                        }
+                    }
                     .onTapGesture {
                         book.updateStatus()
                     }
