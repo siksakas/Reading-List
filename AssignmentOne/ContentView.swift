@@ -11,7 +11,7 @@ struct ContentView: View {
     var body: some View {
         TabView {
             Tab ("Books",systemImage: "book"){
-                Text("Hello, World!")
+                BookView()
             }
             Tab ("Statistics",systemImage: "chart.bar.horizontal.page"){
                 

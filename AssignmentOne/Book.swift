@@ -8,11 +8,21 @@ import Foundation
 
 struct Book: Identifiable, Hashable {
     let id = UUID()
-    let title: String
-    let releaseDate: Date
-    let author: String
+    var title: String
+    var releaseDate: Date
+    var author: String
     var price: Double
     var status: Status
+    
+    mutating func updateStatus() {
+        if (status == Status.unread){
+            self.status = Status.reading
+        } else if (status == Status.reading){
+            self.status = Status.read
+        } else {
+            self.status = Status.unread
+        }
+    }
 }
 
 enum Status {
