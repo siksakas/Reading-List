@@ -120,7 +120,9 @@ struct addBookOverlay: View {
     @State private var price: Double = 0.0
     
     // update this later with a computed var
-    @State private var readyToSubmit: Bool = true
+    private var readyToSubmit: Bool {
+        !title.isEmpty && !author.isEmpty
+    }
     
     var body: some View {
         VStack{
@@ -154,15 +156,26 @@ struct addBookOverlay: View {
                 Spacer()
                 // add check for empty content before submitting
                 Button{
-                    modelContext.insert(
-                        Book(title: title, releaseDate: releaseDate, author: author, price: price, status: .unread)
-                    )
-                    dismiss()
+                    if readyToSubmit {
+                        modelContext.insert(
+                            Book(title: title, releaseDate: releaseDate, author: author, price: price, status: .unread)
+                        )
+                        dismiss()
+                    }
                 } label: {
-                    Image(systemName:"checkmark")
-                        .font(.title)
-                        .frame(width:50, height: 50)
-                        .background(Circle().fill(Color.white))
+                    if readyToSubmit {
+                        Image(systemName:"checkmark")
+                            .font(.title)
+                            .frame(width:50, height: 50)
+                            .background(Circle().fill(Color.white))
+                    } else {
+                        Image(systemName:"checkmark")
+                            .font(.title)
+                            .frame(width:50, height: 50)
+                            .background(Circle().fill(Color.white))
+                            .foregroundStyle(Color.gray)
+                    }
+                    
                 }
             }
             .padding(20)
