@@ -8,13 +8,10 @@ import SwiftUI
 import SwiftData
 
 struct BookView: View {
-//    @State var books: [Book] = [
-//        Book(title: "Book of Siksaka", releaseDate: Date.now, author: "Siksaka", price: 9.99, status: .read),
-//        Book(title: "Silence", releaseDate: Date.now, author: "Shusaku Endo", price: 9.99, status: .unread)
-//    ]
     @Query(sort: \Book.releaseDate) var books: [Book]
     @Environment(\.modelContext) private var modelContext
-//    @State var newBook: Book = Book(title:"",releaseDate: Date.now, author: "", price: 0.0, status: .unread)
+
+    @State var bookToEdit: Book?
     @State var showOverlay = false
     
     var body: some View {
@@ -53,7 +50,7 @@ struct BookView: View {
                             Image(systemName: "trash.fill")
                         }
                         Button (role:.confirm){
-                            modelContext.delete(book)
+                            bookToEdit = book
                         } label: {
                             Image(systemName: "pencil")
                         }
@@ -104,9 +101,16 @@ struct BookView: View {
         .sheet(isPresented: $showOverlay) {
             addBookOverlay()
         }
-        
-        
+        .sheet(item: $bookToEdit){ book in
+            editBookOverlay(book: book)
+        }
+    }
+}
 
+struct editBookOverlay: View {
+    @Bindable var book: Book
+    var body: some View {
+        TextField("Test", text: $book.title)
     }
 }
 
@@ -119,7 +123,6 @@ struct addBookOverlay: View {
     @State private var releaseDate: Date = Date.now
     @State private var price: Double = 0.0
     
-    // update this later with a computed var
     private var readyToSubmit: Bool {
         !title.isEmpty && !author.isEmpty
     }
@@ -154,7 +157,7 @@ struct addBookOverlay: View {
                         .background(Circle().fill(Color.white))
                 }
                 Spacer()
-                // add check for empty content before submitting
+                
                 Button{
                     if readyToSubmit {
                         modelContext.insert(
@@ -175,21 +178,15 @@ struct addBookOverlay: View {
                             .background(Circle().fill(Color.white))
                             .foregroundStyle(Color.gray)
                     }
-                    
                 }
             }
             .padding(20)
         }
-        
         Spacer()
-        
     }
 }
 
 #Preview {
-//    @Previewable @State var booksArr = [Book(title: "Book of Siksaka", releaseDate: Date.now, author: "Siksaka", price: 9.99, status: .read), Book(title: "Silence", releaseDate: Date.now, author: "Shusaku Endo", price: 9.99, status: .unread)]
-//    @Previewable @State var bookToAdd: Book = Book(title:"",releaseDate: Date.now, author: "", price: 0.0, status: .unread)
-//    addBookOverlay(bookToAdd: $bookToAdd, booksArr: $booksArr)
     BookView()
         .modelContainer(for: Book.self, inMemory: true)
 }
